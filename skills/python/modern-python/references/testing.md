@@ -260,6 +260,7 @@ def test_unix_feature():
   run: |
     uv sync --group audit
     uv run pip-audit
+    uv run bandit -r src/ -ll
 
 - name: Upload coverage
   uses: codecov/codecov-action@<sha>  # <latest> https://github.com/codecov/codecov-action/releases

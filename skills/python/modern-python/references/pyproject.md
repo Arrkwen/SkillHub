@@ -168,7 +168,7 @@ Development dependencies (PEP 735). Unlike optional-dependencies, these are NOT 
 dev = [{include-group = "lint"}, {include-group = "test"}, {include-group = "audit"}]
 lint = ["ruff", "ty"]
 test = ["pytest", "pytest-cov"]
-audit = ["pip-audit"]
+audit = ["pip-audit", "bandit"]
 docs = ["sphinx", "myst-parser"]
 ```
 

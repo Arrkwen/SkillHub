@@ -78,6 +78,7 @@ What are you doing?
 | **actionlint** | Workflow syntax validation | pre-commit, CI |
 | **zizmor** | Workflow security audit | pre-commit, CI |
 | **pip-audit** | Dependency vulnerability scanning | CI, manual |
+| **bandit** | Static security lint on project source | CI, manual |
 | **Dependabot** | Automated dependency updates | scheduled |
 
 See [security-setup.md](./references/security-setup.md) for configuration and usage.
@@ -146,7 +147,7 @@ dependencies = []
 dev = [{include-group = "lint"}, {include-group = "test"}, {include-group = "audit"}]
 lint = ["ruff", "ty"]
 test = ["pytest", "pytest-cov"]
-audit = ["pip-audit"]
+audit = ["pip-audit", "bandit"]
 
 [tool.ruff]
 line-length = 100
