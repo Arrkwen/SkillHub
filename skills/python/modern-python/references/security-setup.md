@@ -63,6 +63,7 @@ See [templates/pre-commit-config.yaml](../templates/pre-commit-config.yaml) for 
 | **actionlint** | pre-commit, CI | Workflow syntax errors, invalid refs |
 | **zizmor** | pre-commit, CI | Workflow security issues, excessive permissions |
 | **pip-audit** | CI, manual | Known CVEs in dependencies |
+| **bandit** | CI, manual | Insecure patterns in your Python source |
 | **Dependabot** | scheduled | Outdated dependencies with vulnerabilities |
 
 ## Pre-commit Hooks
@@ -231,6 +232,52 @@ uv run pip-audit --fix
 1. Check if the CVE affects your usage (many are in unused code paths)
 2. Update the package: `uv add <package>@latest`
 3. If no fix available: evaluate risk, consider alternatives, or add to ignore list
+
+### bandit - Source security lint
+
+Scans **your Python code** in the repository for common security antipatterns (e.g. hardcoded secrets, unsafe calls, weak crypto). Complements pip-audit: bandit reviews **what you wrote**; pip-audit reviews **what you installed**.
+
+**Setup:**
+
+```toml
+# pyproject.toml
+[dependency-groups]
+audit = ["pip-audit", "bandit"]
+```
+
+Optional config (severity, skips, excluded paths):
+
+```toml
+[tool.bandit]
+exclude_dirs = ["tests", ".venv"]
+skips = ["B101"]  # example: assert_used in tests — prefer excluding tests instead
+```
+
+**Usage:**
+
+```bash
+# Scan package source (adjust path to your layout)
+uv run bandit -r src/
+
+# JSON for CI artifacts
+uv run bandit -r src/ -f json -o bandit-report.json
+```
+
+**In CI:**
+
+```yaml
+- name: Bandit
+  run: uv run bandit -r src/ -ll
+```
+
+**Overlap with ruff:** Ruff rule set `S` (flake8-bandit) covers many of the same checks during `ruff check`. Use **bandit in CI** when you want Bandit-native test IDs and reporting, or when lint does not enable `S`. Avoid failing on the same issue twice—either enable `S` in ruff or run bandit, unless you intentionally want both gates.
+
+**How bandit and pip-audit work together:**
+
+| Tool | Trigger | Scope |
+|------|---------|-------|
+| pip-audit | CI / `uv run pip-audit` | Known CVEs in dependencies |
+| bandit | CI / `uv run bandit -r …` | Security smells in application source |
 
 ### Dependabot - Automated Updates
 

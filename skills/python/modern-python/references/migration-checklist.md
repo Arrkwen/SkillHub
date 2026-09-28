@@ -109,11 +109,11 @@ uv run ty check src/ 2>&1 | grep -c "error"
 
 ## Supply Chain Security
 
-- [ ] Add pip-audit to dependency groups
+- [ ] Add pip-audit and bandit to dependency groups
 - [ ] Configure Dependabot with 7-day cooldown
 - [ ] Pin exact versions in production (`==` not `>=`)
 
-See [security-setup.md](./security-setup.md) for pip-audit and Dependabot configuration.
+See [security-setup.md](./security-setup.md) for pip-audit, bandit, and Dependabot.
 
 ## Verification
 
@@ -135,6 +135,7 @@ uv run pytest
 
 # Security audit
 uv run pip-audit
+uv run bandit -r src/
 
 # Build package (if distributable)
 uv build
